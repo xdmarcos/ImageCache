@@ -9,8 +9,8 @@ import UIKit
 
 class ImageItem: Hashable {
   let identifier = UUID()
-  var image: UIImage!
-  let url: URL!
+  var image: UIImage
+  let url: URL
 
   func hash(into hasher: inout Hasher) {
     hasher.combine(identifier)
