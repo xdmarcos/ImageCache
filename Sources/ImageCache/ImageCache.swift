@@ -23,11 +23,12 @@ public class ImageCache {
   final public func load(
     url: NSURL,
     item: ImageItem,
+    queue: DispatchQueue = .main,
     completion: @escaping (ImageItem, UIImage?) -> Swift.Void
   ) {
     // Check for a cached image.
     if let cachedImage = image(url: url) {
-      DispatchQueue.main.async {
+      queue.async {
         completion(item, cachedImage)
       }
       return
@@ -45,7 +46,7 @@ public class ImageCache {
       guard let responseData = data, let image = UIImage(data: responseData),
             let blocks = self.loadingResponses[url], error == nil
       else {
-        DispatchQueue.main.async {
+        queue.async {
           completion(item, nil)
         }
         return
@@ -54,7 +55,7 @@ public class ImageCache {
       self.cachedImages.setObject(image, forKey: url, cost: responseData.count)
       // Iterate over each requestor for the image and pass it back.
       for block in blocks {
-        DispatchQueue.main.async {
+        queue.async {
           block(item, image)
         }
         return
