@@ -7,16 +7,16 @@
 
 import UIKit
 
-class ImageItem: Hashable {
+public class ImageItem: Hashable {
   let identifier = UUID()
   var image: UIImage
   let url: URL
 
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     hasher.combine(identifier)
   }
 
-  static func == (lhs: ImageItem, rhs: ImageItem) -> Bool {
+  public static func == (lhs: ImageItem, rhs: ImageItem) -> Bool {
     return lhs.identifier == rhs.identifier
   }
 

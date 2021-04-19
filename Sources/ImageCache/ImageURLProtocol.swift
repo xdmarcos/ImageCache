@@ -7,25 +7,25 @@
 
 import Foundation
 
-class ImageURLProtocol: URLProtocol {
+public class ImageURLProtocol: URLProtocol {
   var cancelledOrComplete: Bool = false
   var block: DispatchWorkItem!
 
   private static let queue = OS_dispatch_queue_serial(label: "gz.xdm.dev.imageLoaderURLProtocol")
 
-  override class func canInit(with _: URLRequest) -> Bool {
+  override public class func canInit(with _: URLRequest) -> Bool {
     return true
   }
 
-  override class func canonicalRequest(for request: URLRequest) -> URLRequest {
+  override public class func canonicalRequest(for request: URLRequest) -> URLRequest {
     return request
   }
 
-  override class func requestIsCacheEquivalent(_: URLRequest, to _: URLRequest) -> Bool {
+  override public class func requestIsCacheEquivalent(_: URLRequest, to _: URLRequest) -> Bool {
     return false
   }
 
-  override final func startLoading() {
+  override public final func startLoading() {
     guard let reqURL = request.url, let urlClient = client else {
       return
     }
@@ -47,7 +47,7 @@ class ImageURLProtocol: URLProtocol {
     )
   }
 
-  override final func stopLoading() {
+  override public final func stopLoading() {
     ImageURLProtocol.queue.async {
       if self.cancelledOrComplete == false, let cancelBlock = self.block {
         cancelBlock.cancel()
@@ -56,7 +56,7 @@ class ImageURLProtocol: URLProtocol {
     }
   }
 
-  static func urlSession() -> URLSession {
+  public static func urlSession() -> URLSession {
     let config = URLSessionConfiguration.ephemeral
     config.protocolClasses = [ImageURLProtocol.classForCoder()]
     return URLSession(configuration: config)

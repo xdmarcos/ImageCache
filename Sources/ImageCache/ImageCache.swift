@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 
 public class ImageCache {
-  public static let publicCache = ImageCache()
-  var placeholderImage = UIImage(systemName: "rectangle")!
+  public static let `public` = ImageCache()
+  public var placeholderImage = UIImage(systemName: "photo")!
   private let cachedImages = NSCache<NSURL, UIImage>()
   private var loadingResponses = [NSURL: [(ImageItem, UIImage?) -> Swift.Void]]()
 
@@ -20,7 +20,7 @@ public class ImageCache {
 
   /// - Tag: cache
   // Returns the cached image if available, otherwise asynchronously loads and caches it.
-  final func load(
+  final public func load(
     url: NSURL,
     item: ImageItem,
     completion: @escaping (ImageItem, UIImage?) -> Swift.Void
