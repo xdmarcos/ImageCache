@@ -1,5 +1,5 @@
 //
-//  ImageURLProtocol.swift
+//  ImageURLLoadable.swift
 //  ImageCache
 //
 //  Created by xdmgzdev on 15/04/2021.
@@ -7,25 +7,25 @@
 
 import Foundation
 
-public class ImageURLProtocol: URLProtocol {
+public class ImageURLLoadable: URLProtocol {
   var cancelledOrComplete: Bool = false
   var block: DispatchWorkItem!
 
   private static let queue = OS_dispatch_queue_serial(label: "gz.xdm.dev.imageLoaderURLProtocol")
 
-  override public class func canInit(with _: URLRequest) -> Bool {
+  public override class func canInit(with _: URLRequest) -> Bool {
     return true
   }
 
-  override public class func canonicalRequest(for request: URLRequest) -> URLRequest {
+  public override class func canonicalRequest(for request: URLRequest) -> URLRequest {
     return request
   }
 
-  override public class func requestIsCacheEquivalent(_: URLRequest, to _: URLRequest) -> Bool {
+  public override class func requestIsCacheEquivalent(_: URLRequest, to _: URLRequest) -> Bool {
     return false
   }
 
-  override public final func startLoading() {
+  public override final func startLoading() {
     guard let reqURL = request.url, let urlClient = client else {
       return
     }
@@ -41,14 +41,14 @@ public class ImageURLProtocol: URLProtocol {
       self.cancelledOrComplete = true
     })
 
-    ImageURLProtocol.queue.asyncAfter(
+    ImageURLLoadable.queue.asyncAfter(
       deadline: DispatchTime(uptimeNanoseconds: 500 * NSEC_PER_MSEC),
       execute: block
     )
   }
 
-  override public final func stopLoading() {
-    ImageURLProtocol.queue.async {
+  public override final func stopLoading() {
+    ImageURLLoadable.queue.async {
       if self.cancelledOrComplete == false, let cancelBlock = self.block {
         cancelBlock.cancel()
         self.cancelledOrComplete = true
@@ -56,9 +56,9 @@ public class ImageURLProtocol: URLProtocol {
     }
   }
 
-  public static func urlSession() -> URLSession {
+  static func urlSession() -> URLSession {
     let config = URLSessionConfiguration.ephemeral
-    config.protocolClasses = [ImageURLProtocol.classForCoder()]
+    config.protocolClasses = [ImageURLLoadable.classForCoder()]
     return URLSession(configuration: config)
   }
 }
