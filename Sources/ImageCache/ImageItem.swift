@@ -20,7 +20,7 @@ public class ImageItem: Hashable {
     return lhs.identifier == rhs.identifier
   }
 
-  init(image: UIImage, url: URL) {
+  public init(image: UIImage, url: URL) {
     self.image = image
     self.url = url
   }
