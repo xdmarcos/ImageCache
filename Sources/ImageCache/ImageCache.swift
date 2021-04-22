@@ -44,8 +44,12 @@ public class ImageCache {
     }
 
     let task = urlSession.dataTask(with: url as URL) { data, _, error in
-      guard let responseData = data, let image = UIImage(data: responseData),
-            let blocks = self.loadingResponses[url], error == nil
+      defer { self.runningRequests.removeValue(forKey: url) }
+      
+      guard let responseData = data,
+            let image = UIImage(data: responseData),
+            let blocks = self.loadingResponses[url],
+            error == nil
       else {
         queue.async {
           completion(item, nil)
